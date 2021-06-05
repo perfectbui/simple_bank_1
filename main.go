@@ -53,8 +53,33 @@ func main() {
 	account2 := CreateRandomAccount12()
 	amount := int64(10)
 	testcaseQty := 5
+	errs := make(chan error)
+	results := make(chan db.TransferTxResult)
 	for i := 0; i < testcaseQty; i++ {
-		store.TransferTx(context.Background(), db.CreateTransferParams{FromAccountID: account1.ID, ToAccountID: account2.ID, Amount: amount})
+		go func() {
+			result, err := store.TransferTx(context.Background(), db.CreateTransferParams{FromAccountID: account1.ID, ToAccountID: account2.ID, Amount: amount})
+			errs <- err
+			results <- result
+		}()
 	}
-
+	a := <-errs
+	b := <-results
+	fmt.Println(a)
+	fmt.Println(b)
+	a = <-errs
+	b = <-results
+	fmt.Println(a)
+	fmt.Println(b)
+	a = <-errs
+	b = <-results
+	fmt.Println(a)
+	fmt.Println(b)
+	a = <-errs
+	b = <-results
+	fmt.Println(a)
+	fmt.Println(b)
+	a = <-errs
+	b = <-results
+	fmt.Println(a)
+	fmt.Println(b)
 }
